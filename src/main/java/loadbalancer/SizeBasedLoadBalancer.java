@@ -8,12 +8,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by anoukh on 5/4/16.
  */
-public class LoadBalancer extends Thread{
+public class SizeBasedLoadBalancer extends Thread{
 
     private LinkedBlockingQueue<Task> workloadQueue;
 
-    public LoadBalancer(LinkedBlockingQueue<Task> taskQueue) {
-        super("LoadBalancer Thread");
+    public SizeBasedLoadBalancer(LinkedBlockingQueue<Task> taskQueue) {
+        super("SizeBasedLoadBalancer Thread");
         this.workloadQueue = taskQueue;
     }
 
@@ -52,21 +52,6 @@ public class LoadBalancer extends Thread{
                     workloadQueueOne.add(task);
                     break;
                 }
-
-//            if (i == 1){
-//                workloadQueueFour.add(task);
-//                i++;
-//            } else if (i == 2){
-//                workloadQueueThree.add(task);
-//                i++;
-//            } else if (i == 3){
-//                workloadQueueTwo.add(task);
-//                i++;
-//            } else {
-//                workloadQueueOne.add(task);
-//                i = 1;
-//            }
-
 
             if (task.getSize() <= 25){
                 workloadQueueFour.add(task);

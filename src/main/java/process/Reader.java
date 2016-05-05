@@ -1,7 +1,6 @@
 package process;
 
-import loadbalancer.LoadBalancer;
-import workload.OutOfRangeException;
+import loadbalancer.SizeBasedLoadBalancer;
 import workload.Task;
 
 import java.util.Random;
@@ -20,7 +19,7 @@ public class Reader extends Thread
     }
 
     public void run(){
-        LoadBalancer loadBalancerThread = new LoadBalancer(taskQueue);
+        SizeBasedLoadBalancer loadBalancerThread = new SizeBasedLoadBalancer(taskQueue);
         loadBalancerThread.start();
 
         Random rn = new Random();

@@ -1,6 +1,6 @@
 package consumer;
 
-import loadbalancer.LoadBalancer;
+import loadbalancer.SizeBasedLoadBalancer;
 import workload.OutOfRangeException;
 import workload.Task;
 
@@ -62,21 +62,21 @@ public class Consumer extends Thread{
         float runTime = (endTime - startTime)/1000.0f;
         float throughput = count/runTime;
         System.out.println(super.getName()/* + " at " + ft.format(endTime) */+ " : Size: " + count + ", Runtime: " + runTime + ", Mean Latency " + runTime/count + ", Throughput: " + throughput + " tasks/sec");
-        LoadBalancer.throughput += throughput;
-        LoadBalancer.latency += runTime;
-        LoadBalancer.count += count;
+        SizeBasedLoadBalancer.throughput += throughput;
+        SizeBasedLoadBalancer.latency += runTime;
+        SizeBasedLoadBalancer.count += count;
         switch (threadIdentifier){
             case 1:
-                LoadBalancer.queueOneFinished = true;
+                SizeBasedLoadBalancer.queueOneFinished = true;
                 break;
             case 2:
-                LoadBalancer.queueTwoFinished = true;
+                SizeBasedLoadBalancer.queueTwoFinished = true;
                 break;
             case 3:
-                LoadBalancer.queueThreeFinished = true;
+                SizeBasedLoadBalancer.queueThreeFinished = true;
                 break;
             case 4:
-                LoadBalancer.queueFourFinished = true;
+                SizeBasedLoadBalancer.queueFourFinished = true;
                 break;
         }
     }

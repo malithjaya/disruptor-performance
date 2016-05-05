@@ -1,10 +1,10 @@
 package consumer;
 
+import loadbalancer.LoadBalancer;
 import workload.OutOfRangeException;
 import workload.Task;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -13,32 +13,72 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Consumer extends Thread{
 
     private LinkedBlockingQueue<Task> workloadQueue;
+    private int threadIdentifier;
+    private int count;
 
     public Consumer(LinkedBlockingQueue<Task> workloadQueue, String name) {
         super(name);
+
+        if (name.equals("Consumer One")){
+            threadIdentifier = 1;
+        } else if (name.equals("Consumer Two")){
+            threadIdentifier = 2;
+        } else if (name.equals("Consumer Three")){
+            threadIdentifier = 3;
+        } else if (name.equals("Consumer Four")){
+            threadIdentifier = 4;
+        }
+
         this.workloadQueue = workloadQueue;
     }
 
     public void run(){
-        if (workloadQueue.size() < 1){
-            System.out.println("Ended Thread: " + super.getName() + "No Elements");
-            return;
-        }
-        Date startDateTime = new Date();
-        long startTime = startDateTime.getTime();
+
+        long startTime = System.currentTimeMillis();
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd.hh:mm:ss-a-zzz");
         System.out.println("Started Thread : " + super.getName() + " at " + ft.format(startTime));
-        for (Task task: workloadQueue) {
+
+
+        while(true){
             try {
+                Task task = workloadQueue.take();
+
+            if (task.getSize() == 0){
+                break;
+            } else {
                 task.executeTask();
+                count++;
+            }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             } catch (OutOfRangeException e) {
                 e.printStackTrace();
             }
         }
-        Date endDateTime = new Date();
-        long endTime = endDateTime.getTime();
-//        System.out.println("Ended Thread : " + super.getName() + " at " + ft.format(endTime) + " Size: " + workloadQueue.size());
-        System.out.println("Ended Thread : " + super.getName() + " at " + ft.format(endTime) + " Size: " + workloadQueue.size() + " Throughput: " + workloadQueue.size()/(float)(endTime-startTime)*1000);
+
+
+        long endTime = System.currentTimeMillis();
+        float runTime = (endTime - startTime)/1000.0f;
+        float throughput = count/runTime;
+        System.out.println(super.getName()/* + " at " + ft.format(endTime) */+ " : Size: " + count + ", Runtime: " + runTime + ", Mean Latency " + runTime/count + ", Throughput: " + throughput + " tasks/sec");
+        LoadBalancer.throughput += throughput;
+        LoadBalancer.latency += runTime;
+        LoadBalancer.count += count;
+        switch (threadIdentifier){
+            case 1:
+                LoadBalancer.queueOneFinished = true;
+                break;
+            case 2:
+                LoadBalancer.queueTwoFinished = true;
+                break;
+            case 3:
+                LoadBalancer.queueThreeFinished = true;
+                break;
+            case 4:
+                LoadBalancer.queueFourFinished = true;
+                break;
+        }
     }
 
 }

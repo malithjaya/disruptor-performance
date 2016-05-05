@@ -1,4 +1,4 @@
-import process.Process;
+import process.Reader;
 import workload.OutOfRangeException;
 
 /**
@@ -6,6 +6,7 @@ import workload.OutOfRangeException;
  */
 public class Main {
     public static void main(String[] args) throws OutOfRangeException {
-        new Process().process();
+        Reader readerThread = new Reader();
+        readerThread.start();
     }
 }

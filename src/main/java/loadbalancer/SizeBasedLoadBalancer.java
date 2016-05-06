@@ -8,43 +8,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by anoukh on 5/4/16.
  */
-public class SizeBasedLoadBalancer extends Thread{
+public class SizeBasedLoadBalancer extends AbstractLoadBalancer{
 
-    private LinkedBlockingQueue<Task> workloadQueue;
 
-    public SizeBasedLoadBalancer(LinkedBlockingQueue<Task> taskQueue) {
-        super("SizeBasedLoadBalancer Thread");
-        this.workloadQueue = taskQueue;
-    }
-
-    public static float latency;
-    public static float throughput;
-    public static float count;
-    public static volatile boolean queueOneFinished;
-    public static volatile boolean queueTwoFinished;
-    public static volatile boolean queueThreeFinished;
-    public static volatile boolean queueFourFinished;
-
-    public void run(){
-        System.out.println("Started LoadBalancing");
-        LinkedBlockingQueue<Task> workloadQueueOne = new LinkedBlockingQueue<Task>();
-        LinkedBlockingQueue<Task> workloadQueueTwo = new LinkedBlockingQueue<Task>();
-        LinkedBlockingQueue<Task> workloadQueueThree = new LinkedBlockingQueue<Task>();
-        LinkedBlockingQueue<Task> workloadQueueFour = new LinkedBlockingQueue<Task>();
-        Consumer consumerThreadOne = new Consumer(workloadQueueOne, "Consumer One");
-        Consumer consumerThreadTwo= new Consumer(workloadQueueTwo, "Consumer Two");
-        Consumer consumerThreadThree = new Consumer(workloadQueueThree, "Consumer Three");
-        Consumer consumerThreadFour = new Consumer(workloadQueueFour, "Consumer Four");
-
-        consumerThreadOne.start();
-        consumerThreadTwo.start();
-        consumerThreadThree.start();
-        consumerThreadFour.start();
+    @Override
+    public void loadBalancerImpl() {
 
         int i = 1;
         while (true){
             try {
-                Task task = workloadQueue.take();
+                Task task = getTaskQueue().take();
                 if (task.getSize() == 0){
                     workloadQueueFour.add(task);
                     workloadQueueThree.add(task);
@@ -53,31 +26,21 @@ public class SizeBasedLoadBalancer extends Thread{
                     break;
                 }
 
-            if (task.getSize() <= 25){
-                workloadQueueFour.add(task);
-            } else if (task.getSize() <= 50){
-                workloadQueueThree.add(task);
-            } else if (task.getSize() <= 75){
-                workloadQueueTwo.add(task);
-            } else {
-                workloadQueueOne.add(task);
-            }
-
+                if (task.getSize() <= 25){
+                    workloadQueueFour.add(task);
+                } else if (task.getSize() <= 50){
+                    workloadQueueThree.add(task);
+                } else if (task.getSize() <= 75){
+                    workloadQueueTwo.add(task);
+                } else {
+                    workloadQueueOne.add(task);
+                }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-
-        while(true){
-            if (queueOneFinished && queueTwoFinished && queueThreeFinished && queueFourFinished){
-                System.out.println("Total Throughput = " + throughput + " tasks/sec");
-                System.out.println("Total Latency = " + latency + " sec");
-                System.out.println("Mean Latency = " + latency/count + " sec/task");
-                System.out.println("Count = " + count + " tasks");
-                System.exit(0);
-            }
-        }
     }
+
 }

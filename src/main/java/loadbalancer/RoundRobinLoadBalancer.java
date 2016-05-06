@@ -1,7 +1,17 @@
 package loadbalancer;
 
+import workload.Task;
+
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Created by malithjayasinghe on 5/5/16.
  */
-public class RoundRobinLoadBalancer {
+public class RoundRobinLoadBalancer extends AbstractLoadBalancer {
+
+
+    @Override
+    public void loadBalancerImpl() {
+
+    }
 }

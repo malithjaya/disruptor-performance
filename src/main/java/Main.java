@@ -1,4 +1,5 @@
-import process.Reader;
+import loadbalancer.SizeBasedLoadBalancer;
+import process.Simulation;
 import workload.OutOfRangeException;
 
 /**
@@ -6,7 +7,7 @@ import workload.OutOfRangeException;
  */
 public class Main {
     public static void main(String[] args) throws OutOfRangeException {
-        Reader readerThread = new Reader();
-        readerThread.start();
+        Simulation simulation = new Simulation(new SizeBasedLoadBalancer());
+        simulation.start();
     }
 }

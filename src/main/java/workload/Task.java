@@ -9,23 +9,32 @@ import util.Constants;
 public class Task {
     private int size;
 
+    /**
+     * The constructor
+     *
+     * @param size the size of the task
+     */
     public Task(int size) {
         this.size = size;
     }
 
 
+    /**
+     * Gets the size of the task to be excecuted
+     *
+     * @return the size
+     */
     public int getSize() {
         return size;
     }
 
     /**
+     * Execute the task
      *
      * @return status of the method call
      */
-    public String executeTask() throws OutOfRangeException {
-        if (this.size < 1 || this.size > 100){
-            throw new OutOfRangeException("Range: 1 <= size <= 100");
-        }
+    public String executeTask()  {
+
         double count = 0;
         for (double i = 0; i < this.size * Constants.TASK_COMPLEXITY; i++){
             count++;

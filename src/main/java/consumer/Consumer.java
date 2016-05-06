@@ -52,8 +52,6 @@ public class Consumer extends Thread{
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            } catch (OutOfRangeException e) {
-                e.printStackTrace();
             }
         }
 

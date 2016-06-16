@@ -7,14 +7,14 @@ import util.Constants;
  * Task class
  */
 public class Task {
-    private int size;
+    private double size;
 
     /**
      * The constructor
      *
      * @param size the size of the task
      */
-    public Task(int size) {
+    public Task(double size) {
         this.size = size;
     }
 
@@ -24,7 +24,7 @@ public class Task {
      *
      * @return the size
      */
-    public int getSize() {
+    public double getSize() {
         return size;
     }
 

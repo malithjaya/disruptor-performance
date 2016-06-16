@@ -1,11 +1,11 @@
 package consumer;
 
-import loadbalancer.SizeBasedLoadBalancer;
-import workload.OutOfRangeException;
+import loadbalancer.AbstractLoadBalancer;
 import workload.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by anoukh on 5/4/16.
@@ -14,7 +14,7 @@ public class Consumer extends Thread{
 
     private LinkedBlockingQueue<Task> workloadQueue;
     private int threadIdentifier;
-    private int count;
+    private int count = 0;
 
     public Consumer(LinkedBlockingQueue<Task> workloadQueue, String name) {
         super(name);
@@ -23,10 +23,10 @@ public class Consumer extends Thread{
             threadIdentifier = 1;
         } else if (name.equals("Consumer Two")){
             threadIdentifier = 2;
-        } else if (name.equals("Consumer Three")){
-            threadIdentifier = 3;
-        } else if (name.equals("Consumer Four")){
-            threadIdentifier = 4;
+//        } else if (name.equals("Consumer Three")){
+//            threadIdentifier = 3;
+//        } else if (name.equals("Consumer Four")){
+//            threadIdentifier = 4;
         }
 
         this.workloadQueue = workloadQueue;
@@ -41,13 +41,13 @@ public class Consumer extends Thread{
 
         while(true){
             try {
-                Task task = workloadQueue.take();
+                Task task = workloadQueue.poll(100, TimeUnit.MILLISECONDS);
 
             if (task.getSize() == 0){
                 break;
             } else {
-                task.executeTask();
                 count++;
+                task.executeTask();
             }
 
             } catch (InterruptedException e) {
@@ -60,22 +60,25 @@ public class Consumer extends Thread{
         float runTime = (endTime - startTime)/1000.0f;
         float throughput = count/runTime;
         System.out.println(super.getName()/* + " at " + ft.format(endTime) */+ " : Size: " + count + ", Runtime: " + runTime + ", Mean Latency " + runTime/count + ", Throughput: " + throughput + " tasks/sec");
-        SizeBasedLoadBalancer.throughput += throughput;
-        SizeBasedLoadBalancer.latency += runTime;
-        SizeBasedLoadBalancer.count += count;
+//        SizeBasedLoadBalancer.throughput += throughput;
+//        SizeBasedLoadBalancer.latency += runTime;
+//        SizeBasedLoadBalancer.count += count;
+        AbstractLoadBalancer.throughput += throughput;
+        AbstractLoadBalancer.latency += runTime;
+        AbstractLoadBalancer.count += count;
         switch (threadIdentifier){
             case 1:
-                SizeBasedLoadBalancer.queueOneFinished = true;
+                AbstractLoadBalancer.queueOneFinished = true;
                 break;
             case 2:
-                SizeBasedLoadBalancer.queueTwoFinished = true;
+                AbstractLoadBalancer.queueTwoFinished = true;
                 break;
-            case 3:
-                SizeBasedLoadBalancer.queueThreeFinished = true;
-                break;
-            case 4:
-                SizeBasedLoadBalancer.queueFourFinished = true;
-                break;
+//            case 3:
+//                SizeBasedLoadBalancer.queueThreeFinished = true;
+//                break;
+//            case 4:
+//                SizeBasedLoadBalancer.queueFourFinished = true;
+//                break;
         }
     }
 

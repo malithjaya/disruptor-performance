@@ -1,17 +1,16 @@
 package process;
 
 import loadbalancer.AbstractLoadBalancer;
-import loadbalancer.SizeBasedLoadBalancer;
+import loadbalancer.RandomLoadBalancer;
 import workload.Task;
 
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by anoukh on 5/4/16.
- * Simulation method
+ * UniformSimulation method
  */
-public class Simulation extends Thread
+public class UniformSimulation extends Thread
 {
 
     private AbstractLoadBalancer loadBalancer;
@@ -22,13 +21,14 @@ public class Simulation extends Thread
      *
      * @param loadBalancer the load balancer to use
      */
-    public Simulation(AbstractLoadBalancer loadBalancer) {
-        super("Simulation Thread");
+    public UniformSimulation(AbstractLoadBalancer loadBalancer) {
+        super("UniformSimulation Thread");
         this.loadBalancer = loadBalancer;
     }
 
     public void run(){
-        SizeBasedLoadBalancer loadBalancerThread = new SizeBasedLoadBalancer();;
+//        AbstractLoadBalancer loadBalancerThread = new SizeBasedLoadBalancer();
+        AbstractLoadBalancer loadBalancerThread=new RandomLoadBalancer();
         loadBalancerThread.start();
         Random rn = new Random();
         for (int i = 0; i < NUM_EVENTS; i++){

@@ -1,5 +1,5 @@
 import loadbalancer.SizeBasedLoadBalancer;
-import process.Simulation;
+import process.ExponentialSimulation;
 import workload.OutOfRangeException;
 
 /**
@@ -7,7 +7,18 @@ import workload.OutOfRangeException;
  */
 public class Main {
     public static void main(String[] args) throws OutOfRangeException {
-        Simulation simulation = new Simulation(new SizeBasedLoadBalancer());
-        simulation.start();
+//        UniformSimulation simulation = new UniformSimulation(new SizeBasedLoadBalancer());
+//        simulation.start();
+//        UniformSimulation simulation = new UniformSimulation(new RandomLoadBalancer());
+//        simulation.start();
+//        UniformSimulation simulation = new UniformSimulation(new RoundRobinLoadBalancer());
+//        simulation.start();
+
+        ExponentialSimulation exponentialSimulation = new ExponentialSimulation(new SizeBasedLoadBalancer());
+        exponentialSimulation.start();
+//        ExponentialSimulation exponentialSimulation=new ExponentialSimulation(new RoundRobinLoadBalancer());
+//        exponentialSimulation.start();
+//        ExponentialSimulation exponentialSimulation=new ExponentialSimulation(new RandomLoadBalancer());
+//        exponentialSimulation.start();
     }
 }

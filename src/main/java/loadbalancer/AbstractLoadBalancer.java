@@ -16,17 +16,17 @@ public abstract class AbstractLoadBalancer extends Thread {
     public static float count;
     public static volatile boolean queueOneFinished;
     public static volatile boolean queueTwoFinished;
-    public static volatile boolean queueThreeFinished;
-    public static volatile boolean queueFourFinished;
+//    public static volatile boolean queueThreeFinished;
+//    public static volatile boolean queueFourFinished;
 
     LinkedBlockingQueue<Task> workloadQueueOne = new LinkedBlockingQueue<Task>();
     LinkedBlockingQueue<Task> workloadQueueTwo = new LinkedBlockingQueue<Task>();
-    LinkedBlockingQueue<Task> workloadQueueThree = new LinkedBlockingQueue<Task>();
-    LinkedBlockingQueue<Task> workloadQueueFour = new LinkedBlockingQueue<Task>();
+    //    LinkedBlockingQueue<Task> workloadQueueThree = new LinkedBlockingQueue<Task>();
+//    LinkedBlockingQueue<Task> workloadQueueFour = new LinkedBlockingQueue<Task>();
     Consumer consumerThreadOne = new Consumer(workloadQueueOne, "Consumer One");
     Consumer consumerThreadTwo= new Consumer(workloadQueueTwo, "Consumer Two");
-    Consumer consumerThreadThree = new Consumer(workloadQueueThree, "Consumer Three");
-    Consumer consumerThreadFour = new Consumer(workloadQueueFour, "Consumer Four");
+//    Consumer consumerThreadThree = new Consumer(workloadQueueThree, "Consumer Three");
+//    Consumer consumerThreadFour = new Consumer(workloadQueueFour, "Consumer Four");
 
     private LinkedBlockingQueue<Task> taskQueue = new LinkedBlockingQueue<Task>();
 
@@ -63,13 +63,15 @@ public abstract class AbstractLoadBalancer extends Thread {
 
     public void run() {
         loadBalancerImpl();
+        consumerThreadOne.setPriority(Thread.MIN_PRIORITY);
         consumerThreadOne.start();
+        consumerThreadTwo.setPriority(Thread.MAX_PRIORITY);
         consumerThreadTwo.start();
-        consumerThreadThree.start();
-        consumerThreadFour.start();
+//        consumerThreadThree.start();
+//        consumerThreadFour.start();
 
         while(true){
-            if (queueOneFinished && queueTwoFinished && queueThreeFinished && queueFourFinished){
+            if (queueOneFinished && queueTwoFinished) {
                 System.out.println("Total Throughput = " + throughput + " tasks/sec");
                 System.out.println("Total Latency = " + latency + " sec");
                 System.out.println("Mean Latency = " + latency/count + " sec/task");
